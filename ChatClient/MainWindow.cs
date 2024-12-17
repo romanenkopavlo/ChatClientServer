@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ namespace ChatClient
         private GestionChat comm;
         private IniFile configFile;
         private Dictionary<int, Color> clients;
+        private Dictionary<String, Color> clientsColors;
+        private int point_init = 20;
+        private Color selectedColor = Color.Black;
+        private List<Button> buttons = new List<Button>();
+        private bool flag = false;
 
         public MainWindow()
         {
@@ -33,6 +39,7 @@ namespace ChatClient
             //
             this.Text += " " + Constants.APP_VERSION;
             this.clients = new Dictionary<int, Color>();
+            this.clientsColors = new Dictionary<string, Color>();
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -103,10 +110,33 @@ namespace ChatClient
             // Client déjà connu ?
             if (!clients.ContainsKey(message.Id))
             {
-                clients.Add(message.Id, this.RandomColor());
+                clients.Add(message.Id, Color.Black);
             }
             //
-            this.AjoutMessage(message, this.clients[message.Id]);
+
+            bool isFound = false;
+
+            foreach (Button btt in buttons)
+            {
+                if (btt.Text == message.Param1)
+                {
+                    isFound = true;
+                }
+            }
+
+            if (!isFound)
+            {
+                addButtonColor(message.Param1);
+            }
+            
+
+            if (this.clientsColors.Count > 0)
+            {
+                this.AjoutMessage(message, this.clientsColors[message.Param1]);
+            } else
+            {
+                this.AjoutMessage(message, this.clients[message.Id]);
+            }
         }
 
         private void AjoutMessage(OutilsChat.Message msg, Color clr)
@@ -120,21 +150,13 @@ namespace ChatClient
             System.Drawing.Font currentFont = richMessages.SelectionFont;
             System.Drawing.FontStyle newFontStyle;
             newFontStyle = FontStyle.Bold;
-            richMessages.SelectionFont = new Font( currentFont, newFontStyle );
+            richMessages.SelectionFont = new Font(currentFont, newFontStyle);
             //
             beforeAppend = this.richMessages.TextLength;
             this.richMessages.AppendText(msg.Texte + Environment.NewLine);
             afterAppend = this.richMessages.TextLength;
             this.richMessages.Select(beforeAppend, afterAppend - beforeAppend);
             this.richMessages.SelectionColor = clr;
-        }
-
-        private Color RandomColor()
-        {
-            Random randomGen = new Random((int)DateTime.Now.Ticks);
-            KnownColor[] names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
-            KnownColor randomColorName = names[randomGen.Next(names.Length)];
-            return Color.FromKnownColor(randomColorName);
         }
 
         private void AfficherErreur(string msg)
@@ -171,19 +193,60 @@ namespace ChatClient
 
         private void buttonEnvoi_Click(object sender, EventArgs e)
         {
+            if (flag == false)
+            {
+                addButtonColor(textAlias.Text);
+                flag = true;
+            }
+            
             if (comm != null)
             {
                 this.comm.Ecrire(this.textMessage.Text);
-                //
                 OutilsChat.Message newMessage = new OutilsChat.Message(0, this.textMessage.Text);
                 newMessage.Envoi(this.textAlias.Text);
-                this.AjoutMessage(newMessage, Color.Black);
+                this.AjoutMessage(newMessage, selectedColor);
             }
         }
 
-        private void textMessage_KeyDown(object sender, KeyEventArgs e)
+        private void addButtonColor(String userName)
         {
+            Button button = new Button();
+            button.Name = "button " + userName;
+            button.Text = userName;
+            point_init = point_init + 20;
+            button.Location = new Point(20, point_init);
+            button.Click += (sender, e) => {
+                ColorDialog colorDialog = new ColorDialog();
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    for (int i = 0; i < richMessages.Lines.Length; i++)
+                    {
+                        string line = richMessages.Lines[i];
+                        if (line.Contains(userName))
+                        {
+                            string nextLine = richMessages.Lines[i + 1];
+                            int start = richMessages.GetFirstCharIndexFromLine(i);
+                            int length = line.Length + nextLine.Length + 1;
+                            richMessages.Select(start, length);
 
+                            if (userName == textAlias.Text)
+                            {
+                                selectedColor = colorDialog.Color;
+                                richMessages.SelectionColor = selectedColor;
+                            } else
+                            {
+                                richMessages.SelectionColor = colorDialog.Color;
+                            }
+
+                            clientsColors.Add(userName, colorDialog.Color);
+                        }
+
+                    }
+                    richMessages.Select(0, 0);
+                }
+            };
+            listButtonsColors.Controls.Add(button);
+            buttons.Add(button);
         }
     }
 }

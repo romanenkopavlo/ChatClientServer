@@ -222,9 +222,9 @@ namespace ChatClient
                     for (int i = 0; i < richMessages.Lines.Length - 1; i++)
                     {
                         string line = richMessages.Lines[i];
-                        int start = richMessages.GetFirstCharIndexFromLine(i);
                         if (line.StartsWith(userName))
-                        {   
+                        {
+                            int start = richMessages.GetFirstCharIndexFromLine(i);
                             string nextLine = richMessages.Lines[i + 1];
                             int length = line.Length + nextLine.Length + Environment.NewLine.Length;
                             richMessages.Select(start, length);

@@ -18,7 +18,7 @@ namespace ChatClient
         private IniFile configFile;
         private Dictionary<int, Color> clients;
         private Dictionary<String, Color> clientsColors;
-        private int point_init = 20;
+        private int point_init = 10;
         private Color selectedColor = Color.Black;
         private List<Button> buttons = new List<Button>();
         private bool flag = false;
@@ -213,20 +213,20 @@ namespace ChatClient
             Button button = new Button();
             button.Name = "button " + userName;
             button.Text = userName;
-            point_init = point_init + 20;
+            point_init = point_init + 30;
             button.Location = new Point(20, point_init);
             button.Click += (sender, e) => {
                 ColorDialog colorDialog = new ColorDialog();
                 if (colorDialog.ShowDialog() == DialogResult.OK)
                 {
-                    for (int i = 0; i < richMessages.Lines.Length; i++)
+                    for (int i = 0; i < richMessages.Lines.Length - 1; i++)
                     {
                         string line = richMessages.Lines[i];
-                        if (line.Contains(userName))
-                        {
+                        int start = richMessages.GetFirstCharIndexFromLine(i);
+                        if (line.StartsWith(userName))
+                        {   
                             string nextLine = richMessages.Lines[i + 1];
-                            int start = richMessages.GetFirstCharIndexFromLine(i);
-                            int length = line.Length + nextLine.Length + 1;
+                            int length = line.Length + nextLine.Length + Environment.NewLine.Length;
                             richMessages.Select(start, length);
 
                             if (userName == textAlias.Text)
@@ -238,11 +238,13 @@ namespace ChatClient
                                 richMessages.SelectionColor = colorDialog.Color;
                             }
 
-                            clientsColors.Add(userName, colorDialog.Color);
+                            if (!clientsColors.ContainsKey(userName))
+                            {
+                                clientsColors.Add(userName, colorDialog.Color);
+                            }
+                            richMessages.Select(0, 0);
                         }
-
                     }
-                    richMessages.Select(0, 0);
                 }
             };
             listButtonsColors.Controls.Add(button);

@@ -64,6 +64,8 @@ namespace ChatServer
             this.clientStream = tcpClient.GetStream();
             //
             byte[] message = new byte[4096];
+
+            
             int bytesRead;
             while (true)
             {
@@ -83,24 +85,36 @@ namespace ChatServer
                     // disconnected, on sort
                     break;
                 }
-                //message reçu
-                ASCIIEncoding encoder = new ASCIIEncoding();
-                String reception = encoder.GetString(message, 0, bytesRead);
-                // On met le message en attente
-                // On demande un accès aux Messages
-                this.AccessMessages.WaitOne();
-                // On reconstitue le message à partir des données brutes
-                OutilsChat.Message msg = new OutilsChat.Message( reception);
-                // Mais on met l'Id du client coté Server
-                msg.Id = this.Id;
-                // On stocke
-                this.Messages.Push( msg );
-                // On libère l'accès
-                this.AccessMessages.ReleaseMutex();
 
-                // Il faut signaler au Serveur qu'on a reçu un message
-                // donc on leve le drapeau
-                this.SignalementMessage.Set();
+                byte[] fileData = new byte[bytesRead];
+                Array.Copy(message, 0, fileData, 0, bytesRead);
+
+                if (IsMp3File(fileData))
+                {
+                    SaveMp3File(fileData, this.Id);
+                    MessageBox.Show("MP3 Received!");
+                } else
+                {
+                    //message reçu
+                    ASCIIEncoding encoder = new ASCIIEncoding();
+                    String reception = encoder.GetString(message, 0, bytesRead);
+                    MessageBox.Show(reception);
+                    // On met le message en attente
+                    // On demande un accès aux Messages
+                    this.AccessMessages.WaitOne();
+                    // On reconstitue le message à partir des données brutes
+                    OutilsChat.Message msg = new OutilsChat.Message(reception);
+                    // Mais on met l'Id du client coté Server
+                    msg.Id = this.Id;
+                    // On stocke
+                    this.Messages.Push(msg);
+                    // On libère l'accès
+                    this.AccessMessages.ReleaseMutex();
+
+                    // Il faut signaler au Serveur qu'on a reçu un message
+                    // donc on leve le drapeau
+                    this.SignalementMessage.Set();
+                }      
             }
             //
             this.running = false;
@@ -117,6 +131,24 @@ namespace ChatServer
             }
         }
 
+        private bool IsMp3File(byte[] fileBytes)
+        {
+            if (fileBytes.Length < 3)
+            {
+                return false;
+            }
+
+            return fileBytes[0] == 0xFF && (fileBytes[1] & 0xF0) == 0xF0;
+        }
+
+        private void SaveMp3File(byte[] fileBytes, int clientId)
+        {
+            
+            string filePath = Path.Combine($"client_{clientId}_received_file.mp3");
+           
+            File.WriteAllBytes(filePath, fileBytes);
+            MessageBox.Show($"Fichier MP3 reçu et sauvegardé : {filePath}");
+        }
 
     }
 }

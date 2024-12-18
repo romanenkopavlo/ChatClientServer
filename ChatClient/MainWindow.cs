@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio.Wave;
 using OutilsChat;
 
 namespace ChatClient
@@ -19,9 +21,20 @@ namespace ChatClient
         private Dictionary<int, Color> clients;
         private Dictionary<String, Color> clientsColors;
         private int point_init = 10;
+        private int point_x_init_mp3 = 20;
+        private int point_y_init_mp3 = 30;
         private Color selectedColor = Color.Black;
         private List<Button> buttons = new List<Button>();
         private bool flag = false;
+        private bool sendingMp3 = false;
+        private bool firstSong = false;
+        private string fichierMp3Name;
+        private string pathToMp3;
+        private IWavePlayer waveOut;
+        private AudioFileReader audioFile;
+        
+
+
 
         public MainWindow()
         {
@@ -36,6 +49,7 @@ namespace ChatClient
             this.numericPort.Value = port;
             this.ipAddressControl1.IPAddress = ipAddress;
             this.textAlias.Text = alias;
+            this.fichierButton.Enabled = false;
             //
             this.Text += " " + Constants.APP_VERSION;
             this.clients = new Dictionary<int, Color>();
@@ -67,6 +81,7 @@ namespace ChatClient
                     this.buttonStop.Visible = true;
                     this.textMessage.Enabled = true;
                     this.buttonEnvoi.Enabled = true;
+                    this.fichierButton.Enabled = true;
                     this.AfficherInfo("Connection sur " + this.ipAddressControl1.IPAddress + ":" + this.numericPort.Value + ".");
                 }
                 else
@@ -94,6 +109,7 @@ namespace ChatClient
             this.buttonStop.Visible = false;
             this.textMessage.Enabled = false;
             this.buttonEnvoi.Enabled = false;
+            this.fichierButton.Enabled = false;
             this.comm.Stop();
             this.comm = null;
         }
@@ -128,12 +144,13 @@ namespace ChatClient
             {
                 addButtonColor(message.Param1);
             }
-            
+
 
             if (this.clientsColors.Count > 0)
             {
                 this.AjoutMessage(message, this.clientsColors[message.Param1]);
-            } else
+            }
+            else
             {
                 this.AjoutMessage(message, this.clients[message.Id]);
             }
@@ -198,10 +215,74 @@ namespace ChatClient
                 addButtonColor(textAlias.Text);
                 flag = true;
             }
-            
+
+            if (sendingMp3)
+            {
+                Label label = new Label();
+                Button buttonPlay = new Button();
+                Button buttonStopMp3 = new Button();
+
+                label.Text = fichierMp3Name;
+                if (!firstSong)
+                {
+                    label.Location = new Point(20, point_y_init_mp3);
+                    firstSong = true;
+                } else
+                {
+                    label.Location = new Point(20, point_y_init_mp3 + (point_y_init_mp3 / 2));
+                }
+                
+                label.Width = 300;
+                buttonPlay.Text = "Play";
+                buttonPlay.Location = new Point(20, point_y_init_mp3 * 2);
+                buttonPlay.Name = fichierMp3Name.Replace(".", "") + "button";
+                
+                buttonStopMp3.Text = "Stop";
+                buttonStopMp3.Location = new Point(100, point_y_init_mp3 * 2);
+                buttonStopMp3.Name = fichierMp3Name.Replace(".", "") + "button";
+                buttonStopMp3.Enabled = false;
+
+                buttonPlay.Tag = pathToMp3;
+                buttonStopMp3.Tag = pathToMp3;
+                
+                point_y_init_mp3 = point_y_init_mp3 * 2;
+
+                buttonPlay.Click += (sender, e) =>
+                {
+                    buttonPlay.Enabled = false;
+                    buttonStopMp3.Enabled = true;
+                    waveOut = new WaveOutEvent();
+                    audioFile = new AudioFileReader(buttonPlay.Tag.ToString());
+                    waveOut.Init(audioFile);
+                    waveOut.Play();
+                };
+
+                buttonStopMp3.Click += (sender, e) =>
+                {
+                    IWavePlayer waveOutLocal = waveOut;
+                    waveOutLocal.Stop();
+                    buttonStopMp3.Enabled = false;
+                    buttonPlay.Enabled = true;
+                };
+
+                fichiersGestion.Controls.Add(label);
+                fichiersGestion.Controls.Add(buttonPlay);
+                fichiersGestion.Controls.Add(buttonStopMp3);
+            }
+
             if (comm != null)
             {
-                this.comm.Ecrire(this.textMessage.Text);
+                if (!sendingMp3)
+                {
+                    this.comm.Ecrire(this.textMessage.Text);
+                }
+                else
+                {
+                    this.comm.Ecrire(pathToMp3);
+                    sendingMp3 = false;
+                    MessageBox.Show("Le lien est envoyé");
+                }
+
                 OutilsChat.Message newMessage = new OutilsChat.Message(0, this.textMessage.Text);
                 newMessage.Envoi(this.textAlias.Text);
                 this.AjoutMessage(newMessage, selectedColor);
@@ -215,7 +296,8 @@ namespace ChatClient
             button.Text = userName;
             point_init = point_init + 30;
             button.Location = new Point(20, point_init);
-            button.Click += (sender, e) => {
+            button.Click += (sender, e) =>
+            {
                 ColorDialog colorDialog = new ColorDialog();
                 if (colorDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -233,7 +315,8 @@ namespace ChatClient
                             {
                                 selectedColor = colorDialog.Color;
                                 richMessages.SelectionColor = selectedColor;
-                            } else
+                            }
+                            else
                             {
                                 richMessages.SelectionColor = colorDialog.Color;
                             }
@@ -249,6 +332,34 @@ namespace ChatClient
             };
             listButtonsColors.Controls.Add(button);
             buttons.Add(button);
+        }
+
+        private void fichierButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Fichiers MP3 (.mp3)|*.mp3";
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.Multiselect = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fichier = openFileDialog.SafeFileName;
+                
+                string ext = Path.GetExtension(fichier).ToLower();
+
+                if (ext == ".mp3")
+                {
+                    pathToMp3 = openFileDialog.FileName;
+                    fichierMp3Name = fichier;
+                    textMessage.Clear();
+                    textMessage.Text = fichierMp3Name;
+                    sendingMp3 = true;
+                }
+                else
+                {
+                    MessageBox.Show("Type de fichier inconnu", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

@@ -55,10 +55,10 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(441, 454);
-            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Location = new Point(504, 605);
+            label3.Margin = new Padding(5, 0, 5, 0);
             label3.Name = "label3";
-            label3.Size = new Size(53, 15);
+            label3.Size = new Size(67, 20);
             label3.TabIndex = 4;
             label3.Text = "Message";
             // 
@@ -72,11 +72,11 @@
             groupBox1.Controls.Add(numericPort);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(buttonStart);
-            groupBox1.Location = new Point(14, 14);
-            groupBox1.Margin = new Padding(4);
+            groupBox1.Location = new Point(16, 19);
+            groupBox1.Margin = new Padding(5, 5, 5, 5);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(4);
-            groupBox1.Size = new Size(536, 94);
+            groupBox1.Padding = new Padding(5, 5, 5, 5);
+            groupBox1.Size = new Size(613, 125);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Configuration";
@@ -84,27 +84,27 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(218, 59);
-            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Location = new Point(249, 79);
+            label4.Margin = new Padding(5, 0, 5, 0);
             label4.Name = "label4";
-            label4.Size = new Size(38, 15);
+            label4.Size = new Size(48, 20);
             label4.TabIndex = 5;
             label4.Text = "Alias :";
             // 
             // textAlias
             // 
-            textAlias.Location = new Point(264, 56);
-            textAlias.Margin = new Padding(4);
+            textAlias.Location = new Point(302, 75);
+            textAlias.Margin = new Padding(5, 5, 5, 5);
             textAlias.Name = "textAlias";
-            textAlias.Size = new Size(116, 23);
+            textAlias.Size = new Size(132, 27);
             textAlias.TabIndex = 4;
             // 
             // buttonStop
             // 
-            buttonStop.Location = new Point(414, 25);
-            buttonStop.Margin = new Padding(4);
+            buttonStop.Location = new Point(473, 33);
+            buttonStop.Margin = new Padding(5, 5, 5, 5);
             buttonStop.Name = "buttonStop";
-            buttonStop.Size = new Size(88, 26);
+            buttonStop.Size = new Size(101, 35);
             buttonStop.TabIndex = 3;
             buttonStop.Text = "Stop";
             buttonStop.UseVisualStyleBackColor = true;
@@ -116,30 +116,30 @@
             ipAddressControl1.BackColor = SystemColors.Control;
             ipAddressControl1.IPAddress = "0.0.0.0";
             ipAddressControl1.IsSubnetMask = false;
-            ipAddressControl1.Location = new Point(66, 24);
-            ipAddressControl1.Margin = new Padding(4, 5, 4, 5);
+            ipAddressControl1.Location = new Point(75, 32);
+            ipAddressControl1.Margin = new Padding(5, 7, 5, 7);
             ipAddressControl1.Name = "ipAddressControl1";
-            ipAddressControl1.Size = new Size(178, 23);
+            ipAddressControl1.Size = new Size(203, 31);
             ipAddressControl1.TabIndex = 0;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(7, 28);
-            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Location = new Point(8, 37);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(46, 15);
+            label2.Size = new Size(58, 20);
             label2.TabIndex = 2;
             label2.Text = "Serveur";
             // 
             // numericPort
             // 
-            numericPort.Location = new Point(312, 25);
-            numericPort.Margin = new Padding(4);
+            numericPort.Location = new Point(357, 33);
+            numericPort.Margin = new Padding(5, 5, 5, 5);
             numericPort.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
             numericPort.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericPort.Name = "numericPort";
-            numericPort.Size = new Size(91, 23);
+            numericPort.Size = new Size(104, 27);
             numericPort.TabIndex = 1;
             numericPort.TextAlign = HorizontalAlignment.Right;
             numericPort.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -147,19 +147,19 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(265, 28);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Location = new Point(303, 37);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(46, 20);
             label1.TabIndex = 1;
             label1.Text = "Port : ";
             // 
             // buttonStart
             // 
-            buttonStart.Location = new Point(414, 24);
-            buttonStart.Margin = new Padding(4);
+            buttonStart.Location = new Point(473, 32);
+            buttonStart.Margin = new Padding(5, 5, 5, 5);
             buttonStart.Name = "buttonStart";
-            buttonStart.Size = new Size(88, 26);
+            buttonStart.Size = new Size(101, 35);
             buttonStart.TabIndex = 2;
             buttonStart.Text = "Start";
             buttonStart.UseVisualStyleBackColor = true;
@@ -168,32 +168,32 @@
             // richMessages
             // 
             richMessages.DetectUrls = false;
-            richMessages.Location = new Point(14, 114);
-            richMessages.Margin = new Padding(4);
+            richMessages.Location = new Point(16, 152);
+            richMessages.Margin = new Padding(5, 5, 5, 5);
             richMessages.Name = "richMessages";
             richMessages.ReadOnly = true;
-            richMessages.Size = new Size(536, 332);
+            richMessages.Size = new Size(612, 441);
             richMessages.TabIndex = 1;
             richMessages.Text = "";
             // 
             // textMessage
             // 
             textMessage.Enabled = false;
-            textMessage.Location = new Point(14, 454);
-            textMessage.Margin = new Padding(4);
+            textMessage.Location = new Point(16, 605);
+            textMessage.Margin = new Padding(5, 5, 5, 5);
             textMessage.Multiline = true;
             textMessage.Name = "textMessage";
             textMessage.ScrollBars = ScrollBars.Both;
-            textMessage.Size = new Size(403, 104);
+            textMessage.Size = new Size(460, 137);
             textMessage.TabIndex = 2;
             // 
             // buttonEnvoi
             // 
             buttonEnvoi.Enabled = false;
-            buttonEnvoi.Location = new Point(428, 472);
-            buttonEnvoi.Margin = new Padding(4);
+            buttonEnvoi.Location = new Point(489, 629);
+            buttonEnvoi.Margin = new Padding(5, 5, 5, 5);
             buttonEnvoi.Name = "buttonEnvoi";
-            buttonEnvoi.Size = new Size(66, 86);
+            buttonEnvoi.Size = new Size(75, 115);
             buttonEnvoi.TabIndex = 3;
             buttonEnvoi.Text = "Envoyer";
             buttonEnvoi.UseVisualStyleBackColor = true;
@@ -203,32 +203,35 @@
             // 
             statusBar.ImageScalingSize = new Size(20, 20);
             statusBar.Items.AddRange(new ToolStripItem[] { statusBarInfo });
-            statusBar.Location = new Point(0, 574);
+            statusBar.Location = new Point(0, 930);
             statusBar.Name = "statusBar";
-            statusBar.Padding = new Padding(1, 0, 17, 0);
-            statusBar.Size = new Size(926, 22);
+            statusBar.Padding = new Padding(1, 0, 19, 0);
+            statusBar.Size = new Size(1058, 22);
             statusBar.TabIndex = 5;
             statusBar.Text = "statusStrip1";
             // 
             // statusBarInfo
             // 
             statusBarInfo.Name = "statusBarInfo";
-            statusBarInfo.Size = new Size(0, 17);
+            statusBarInfo.Size = new Size(0, 16);
             // 
             // listButtonsColors
             // 
-            listButtonsColors.Location = new Point(601, 14);
+            listButtonsColors.Location = new Point(687, 19);
+            listButtonsColors.Margin = new Padding(3, 4, 3, 4);
             listButtonsColors.Name = "listButtonsColors";
-            listButtonsColors.Size = new Size(200, 315);
+            listButtonsColors.Padding = new Padding(3, 4, 3, 4);
+            listButtonsColors.Size = new Size(229, 420);
             listButtonsColors.TabIndex = 6;
             listButtonsColors.TabStop = false;
-            listButtonsColors.Text = "Gestion des chaters";
+            listButtonsColors.Text = "Changement des couleurs";
             // 
             // fichierButton
             // 
-            fichierButton.Location = new Point(501, 472);
+            fichierButton.Location = new Point(573, 629);
+            fichierButton.Margin = new Padding(3, 4, 3, 4);
             fichierButton.Name = "fichierButton";
-            fichierButton.Size = new Size(58, 86);
+            fichierButton.Size = new Size(66, 115);
             fichierButton.TabIndex = 7;
             fichierButton.Text = "Fichier";
             fichierButton.UseVisualStyleBackColor = true;
@@ -236,18 +239,20 @@
             // 
             // fichiersGestion
             // 
-            fichiersGestion.Location = new Point(601, 346);
+            fichiersGestion.Location = new Point(687, 461);
+            fichiersGestion.Margin = new Padding(3, 4, 3, 4);
             fichiersGestion.Name = "fichiersGestion";
-            fichiersGestion.Size = new Size(295, 212);
+            fichiersGestion.Padding = new Padding(3, 4, 3, 4);
+            fichiersGestion.Size = new Size(337, 439);
             fichiersGestion.TabIndex = 8;
             fichiersGestion.TabStop = false;
-            fichiersGestion.Text = "Fichiers";
+            fichiersGestion.Text = "Musique";
             // 
             // MainWindow
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(926, 596);
+            ClientSize = new Size(1058, 952);
             Controls.Add(fichiersGestion);
             Controls.Add(fichierButton);
             Controls.Add(listButtonsColors);
@@ -257,7 +262,7 @@
             Controls.Add(textMessage);
             Controls.Add(richMessages);
             Controls.Add(groupBox1);
-            Margin = new Padding(4);
+            Margin = new Padding(5, 5, 5, 5);
             MaximizeBox = false;
             Name = "MainWindow";
             Text = "Client de Tchatche";

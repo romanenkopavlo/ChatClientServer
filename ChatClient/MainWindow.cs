@@ -21,8 +21,7 @@ namespace ChatClient
         private Dictionary<int, Color> clients;
         private Dictionary<String, Color> clientsColors;
         private int point_init = 10;
-        private int point_x_init_mp3 = 20;
-        private int point_y_init_mp3 = 30;
+        private int point_init_mp3 = 30;
         private Color selectedColor = Color.Black;
         private List<Button> buttons = new List<Button>();
         private bool flag = false;
@@ -32,7 +31,7 @@ namespace ChatClient
         private string pathToMp3;
         private IWavePlayer waveOut;
         private AudioFileReader audioFile;
-        
+        private byte[] bytesMp3;
 
 
 
@@ -130,6 +129,25 @@ namespace ChatClient
             }
             //
 
+            if (message.bytesMp3 != null)
+            {
+                String receivedFile = $"output{DateTime.Now.ToString().Replace(".", "").Replace(":", "")}{message.Id}.mp3";
+                File.WriteAllBytes(receivedFile, message.bytesMp3);
+                
+                var file = TagLib.File.Create(receivedFile);
+                string title = file.Tag.Title;
+
+                if (string.IsNullOrEmpty(title))
+                {
+                    title = "Unnamed.mp3";
+                } else
+                {
+                    title += ".mp3";
+                }
+
+                creationPlayStopMp3(title, receivedFile);
+            }
+
             bool isFound = false;
 
             foreach (Button btt in buttons)
@@ -218,56 +236,7 @@ namespace ChatClient
 
             if (sendingMp3)
             {
-                Label label = new Label();
-                Button buttonPlay = new Button();
-                Button buttonStopMp3 = new Button();
-
-                label.Text = fichierMp3Name;
-                if (!firstSong)
-                {
-                    label.Location = new Point(20, point_y_init_mp3);
-                    firstSong = true;
-                } else
-                {
-                    label.Location = new Point(20, point_y_init_mp3 + (point_y_init_mp3 / 2));
-                }
-                
-                label.Width = 300;
-                buttonPlay.Text = "Play";
-                buttonPlay.Location = new Point(20, point_y_init_mp3 * 2);
-                buttonPlay.Name = fichierMp3Name.Replace(".", "") + "button";
-                
-                buttonStopMp3.Text = "Stop";
-                buttonStopMp3.Location = new Point(100, point_y_init_mp3 * 2);
-                buttonStopMp3.Name = fichierMp3Name.Replace(".", "") + "button";
-                buttonStopMp3.Enabled = false;
-
-                buttonPlay.Tag = pathToMp3;
-                buttonStopMp3.Tag = pathToMp3;
-                
-                point_y_init_mp3 = point_y_init_mp3 * 2;
-
-                buttonPlay.Click += (sender, e) =>
-                {
-                    buttonPlay.Enabled = false;
-                    buttonStopMp3.Enabled = true;
-                    waveOut = new WaveOutEvent();
-                    audioFile = new AudioFileReader(buttonPlay.Tag.ToString());
-                    waveOut.Init(audioFile);
-                    waveOut.Play();
-                };
-
-                buttonStopMp3.Click += (sender, e) =>
-                {
-                    IWavePlayer waveOutLocal = waveOut;
-                    waveOutLocal.Stop();
-                    buttonStopMp3.Enabled = false;
-                    buttonPlay.Enabled = true;
-                };
-
-                fichiersGestion.Controls.Add(label);
-                fichiersGestion.Controls.Add(buttonPlay);
-                fichiersGestion.Controls.Add(buttonStopMp3);
+                creationPlayStopMp3(fichierMp3Name, pathToMp3);
             }
 
             if (comm != null)
@@ -278,11 +247,9 @@ namespace ChatClient
                 }
                 else
                 {
-                    this.comm.Ecrire(pathToMp3);
+                    this.comm.Ecrire(this.textMessage.Text, bytesMp3);
                     sendingMp3 = false;
-                    MessageBox.Show("Le lien est envoyé");
                 }
-
                 OutilsChat.Message newMessage = new OutilsChat.Message(0, this.textMessage.Text);
                 newMessage.Envoi(this.textAlias.Text);
                 this.AjoutMessage(newMessage, selectedColor);
@@ -353,13 +320,93 @@ namespace ChatClient
                     fichierMp3Name = fichier;
                     textMessage.Clear();
                     textMessage.Text = fichierMp3Name;
-                    sendingMp3 = true;
+                    bytesMp3 = File.ReadAllBytes(pathToMp3);
+                    if (IsMp3File(bytesMp3))
+                    {
+                        sendingMp3 = true;
+                    } else
+                    {
+                        MessageBox.Show("Format incorrect de fichier", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
                     MessageBox.Show("Type de fichier inconnu", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private bool IsMp3File(byte[] fileBytes)
+        {
+            if (fileBytes.Length < 3)
+                return false;
+
+            if (fileBytes[0] == 0x49 && fileBytes[1] == 0x44 && fileBytes[2] == 0x33)
+            {
+                return true;
+            }
+
+            if (fileBytes.Length >= 2 && fileBytes[0] == 0xFF && (fileBytes[1] & 0xE0) == 0xE0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void creationPlayStopMp3(string fileName, string filePath)
+        {
+            Label label = new Label();
+            Button buttonPlay = new Button();
+            Button buttonStopMp3 = new Button();
+
+            label.Text = fileName;
+            if (!firstSong)
+            {
+                label.Location = new Point(20, point_init_mp3);
+                firstSong = true;
+            }
+            else
+            {
+                label.Location = new Point(20, point_init_mp3 + (point_init_mp3 / 2));
+            }
+
+            label.Width = 300;
+            buttonPlay.Text = "Play";
+            buttonPlay.Location = new Point(20, point_init_mp3 * 2);
+            buttonPlay.Name = fileName.Replace(".", "") + "button";
+
+            buttonStopMp3.Text = "Stop";
+            buttonStopMp3.Location = new Point(100, point_init_mp3 * 2);
+            buttonStopMp3.Name = fileName.Replace(".", "") + "button";
+            buttonStopMp3.Enabled = false;
+
+            buttonPlay.Tag = filePath;
+            buttonStopMp3.Tag = filePath;
+
+            point_init_mp3 = point_init_mp3 * 2;
+
+            buttonPlay.Click += (sender, e) =>
+            {
+                buttonPlay.Enabled = false;
+                buttonStopMp3.Enabled = true;
+                waveOut = new WaveOutEvent();
+                audioFile = new AudioFileReader(buttonPlay.Tag.ToString());
+                waveOut.Init(audioFile);
+                waveOut.Play();
+            };
+
+            buttonStopMp3.Click += (sender, e) =>
+            {
+                IWavePlayer waveOutLocal = waveOut;
+                waveOutLocal.Stop();
+                buttonStopMp3.Enabled = false;
+                buttonPlay.Enabled = true;
+            };
+
+            fichiersGestion.Controls.Add(label);
+            fichiersGestion.Controls.Add(buttonPlay);
+            fichiersGestion.Controls.Add(buttonStopMp3);
         }
     }
 }

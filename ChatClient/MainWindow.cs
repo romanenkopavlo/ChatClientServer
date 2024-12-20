@@ -20,20 +20,15 @@ namespace ChatClient
         private IniFile configFile;
         private Dictionary<int, Color> clients;
         private Dictionary<String, Color> clientsColors;
-        private int point_init = 10;
-        private int point_init_mp3 = 30;
         private Color selectedColor = Color.Black;
         private List<Button> buttons = new List<Button>();
         private bool flag = false;
         private bool sendingMp3 = false;
-        private bool firstSong = false;
         private string fichierMp3Name;
         private string pathToMp3;
         private IWavePlayer waveOut;
         private AudioFileReader audioFile;
         private byte[] bytesMp3;
-
-
 
         public MainWindow()
         {
@@ -49,6 +44,8 @@ namespace ChatClient
             this.ipAddressControl1.IPAddress = ipAddress;
             this.textAlias.Text = alias;
             this.fichierButton.Enabled = false;
+            this.labelMp3List.Visible = false;
+            this.colorChangeLabel.Visible = false;
             //
             this.Text += " " + Constants.APP_VERSION;
             this.clients = new Dictionary<int, Color>();
@@ -131,7 +128,7 @@ namespace ChatClient
 
             if (message.bytesMp3 != null)
             {
-                String receivedFile = $"output{DateTime.Now.ToString().Replace(".", "").Replace(":", "")}{message.Id}.mp3";
+                String receivedFile = $"output{Guid.NewGuid()}.mp3";
                 File.WriteAllBytes(receivedFile, message.bytesMp3);
                 
                 var file = TagLib.File.Create(receivedFile);
@@ -239,6 +236,21 @@ namespace ChatClient
                 creationPlayStopMp3(fichierMp3Name, pathToMp3);
             }
 
+            bool isFound = false;
+
+            foreach (Button btt in buttons)
+            {
+                if (btt.Text == textAlias.Text)
+                {
+                    isFound = true;
+                }
+            }
+
+            if (!isFound)
+            {
+                addButtonColor(textAlias.Text);
+            }
+
             if (comm != null)
             {
                 if (!sendingMp3)
@@ -258,11 +270,11 @@ namespace ChatClient
 
         private void addButtonColor(String userName)
         {
+            this.colorChangeLabel.Visible = true;
             Button button = new Button();
             button.Name = "button " + userName;
             button.Text = userName;
-            point_init = point_init + 30;
-            button.Location = new Point(20, point_init);
+          
             button.Click += (sender, e) =>
             {
                 ColorDialog colorDialog = new ColorDialog();
@@ -297,7 +309,9 @@ namespace ChatClient
                     }
                 }
             };
-            listButtonsColors.Controls.Add(button);
+
+            listColors.BorderStyle = BorderStyle.Fixed3D;
+            listColors.Controls.Add(button);
             buttons.Add(button);
         }
 
@@ -356,35 +370,22 @@ namespace ChatClient
 
         private void creationPlayStopMp3(string fileName, string filePath)
         {
+            this.labelMp3List.Visible = true;
             Label label = new Label();
             Button buttonPlay = new Button();
             Button buttonStopMp3 = new Button();
-
             label.Text = fileName;
-            if (!firstSong)
-            {
-                label.Location = new Point(20, point_init_mp3);
-                firstSong = true;
-            }
-            else
-            {
-                label.Location = new Point(20, point_init_mp3 + (point_init_mp3 / 2));
-            }
 
             label.Width = 300;
             buttonPlay.Text = "Play";
-            buttonPlay.Location = new Point(20, point_init_mp3 * 2);
             buttonPlay.Name = fileName.Replace(".", "") + "button";
 
             buttonStopMp3.Text = "Stop";
-            buttonStopMp3.Location = new Point(100, point_init_mp3 * 2);
             buttonStopMp3.Name = fileName.Replace(".", "") + "button";
             buttonStopMp3.Enabled = false;
 
             buttonPlay.Tag = filePath;
             buttonStopMp3.Tag = filePath;
-
-            point_init_mp3 = point_init_mp3 * 2;
 
             buttonPlay.Click += (sender, e) =>
             {
@@ -404,9 +405,21 @@ namespace ChatClient
                 buttonPlay.Enabled = true;
             };
 
-            fichiersGestion.Controls.Add(label);
-            fichiersGestion.Controls.Add(buttonPlay);
-            fichiersGestion.Controls.Add(buttonStopMp3);
+            listeMusiqueMP3.BorderStyle = BorderStyle.Fixed3D;
+
+            listeMusiqueMP3.Controls.Add(label);
+            listeMusiqueMP3.Controls.Add(buttonPlay);
+            listeMusiqueMP3.Controls.Add(buttonStopMp3);
+
+            Panel separator = new Panel
+            {
+                Height = 2,
+                Width = listeMusiqueMP3.Width,
+                BackColor = Color.Gray,
+                Dock = DockStyle.Top
+            };
+
+            listeMusiqueMP3.Controls.Add(separator);
         }
     }
 }

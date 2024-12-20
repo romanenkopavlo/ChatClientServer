@@ -43,9 +43,12 @@
             buttonEnvoi = new Button();
             statusBar = new StatusStrip();
             statusBarInfo = new ToolStripStatusLabel();
-            listButtonsColors = new GroupBox();
             fichierButton = new Button();
-            fichiersGestion = new GroupBox();
+            listeMusiqueMP3 = new FlowLayoutPanel();
+            splitter1 = new Splitter();
+            labelMp3List = new Label();
+            listColors = new FlowLayoutPanel();
+            colorChangeLabel = new Label();
             label3 = new Label();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericPort).BeginInit();
@@ -73,9 +76,9 @@
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(buttonStart);
             groupBox1.Location = new Point(16, 19);
-            groupBox1.Margin = new Padding(5, 5, 5, 5);
+            groupBox1.Margin = new Padding(5);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(5, 5, 5, 5);
+            groupBox1.Padding = new Padding(5);
             groupBox1.Size = new Size(613, 125);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
@@ -94,7 +97,7 @@
             // textAlias
             // 
             textAlias.Location = new Point(302, 75);
-            textAlias.Margin = new Padding(5, 5, 5, 5);
+            textAlias.Margin = new Padding(5);
             textAlias.Name = "textAlias";
             textAlias.Size = new Size(132, 27);
             textAlias.TabIndex = 4;
@@ -102,7 +105,7 @@
             // buttonStop
             // 
             buttonStop.Location = new Point(473, 33);
-            buttonStop.Margin = new Padding(5, 5, 5, 5);
+            buttonStop.Margin = new Padding(5);
             buttonStop.Name = "buttonStop";
             buttonStop.Size = new Size(101, 35);
             buttonStop.TabIndex = 3;
@@ -135,7 +138,7 @@
             // numericPort
             // 
             numericPort.Location = new Point(357, 33);
-            numericPort.Margin = new Padding(5, 5, 5, 5);
+            numericPort.Margin = new Padding(5);
             numericPort.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
             numericPort.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericPort.Name = "numericPort";
@@ -157,7 +160,7 @@
             // buttonStart
             // 
             buttonStart.Location = new Point(473, 32);
-            buttonStart.Margin = new Padding(5, 5, 5, 5);
+            buttonStart.Margin = new Padding(5);
             buttonStart.Name = "buttonStart";
             buttonStart.Size = new Size(101, 35);
             buttonStart.TabIndex = 2;
@@ -169,7 +172,7 @@
             // 
             richMessages.DetectUrls = false;
             richMessages.Location = new Point(16, 152);
-            richMessages.Margin = new Padding(5, 5, 5, 5);
+            richMessages.Margin = new Padding(5);
             richMessages.Name = "richMessages";
             richMessages.ReadOnly = true;
             richMessages.Size = new Size(612, 441);
@@ -180,7 +183,7 @@
             // 
             textMessage.Enabled = false;
             textMessage.Location = new Point(16, 605);
-            textMessage.Margin = new Padding(5, 5, 5, 5);
+            textMessage.Margin = new Padding(5);
             textMessage.Multiline = true;
             textMessage.Name = "textMessage";
             textMessage.ScrollBars = ScrollBars.Both;
@@ -191,7 +194,7 @@
             // 
             buttonEnvoi.Enabled = false;
             buttonEnvoi.Location = new Point(489, 629);
-            buttonEnvoi.Margin = new Padding(5, 5, 5, 5);
+            buttonEnvoi.Margin = new Padding(5);
             buttonEnvoi.Name = "buttonEnvoi";
             buttonEnvoi.Size = new Size(75, 115);
             buttonEnvoi.TabIndex = 3;
@@ -203,10 +206,10 @@
             // 
             statusBar.ImageScalingSize = new Size(20, 20);
             statusBar.Items.AddRange(new ToolStripItem[] { statusBarInfo });
-            statusBar.Location = new Point(0, 930);
+            statusBar.Location = new Point(0, 810);
             statusBar.Name = "statusBar";
             statusBar.Padding = new Padding(1, 0, 19, 0);
-            statusBar.Size = new Size(1058, 22);
+            statusBar.Size = new Size(1059, 22);
             statusBar.TabIndex = 5;
             statusBar.Text = "statusStrip1";
             // 
@@ -214,17 +217,6 @@
             // 
             statusBarInfo.Name = "statusBarInfo";
             statusBarInfo.Size = new Size(0, 16);
-            // 
-            // listButtonsColors
-            // 
-            listButtonsColors.Location = new Point(687, 19);
-            listButtonsColors.Margin = new Padding(3, 4, 3, 4);
-            listButtonsColors.Name = "listButtonsColors";
-            listButtonsColors.Padding = new Padding(3, 4, 3, 4);
-            listButtonsColors.Size = new Size(229, 420);
-            listButtonsColors.TabIndex = 6;
-            listButtonsColors.TabStop = false;
-            listButtonsColors.Text = "Changement des couleurs";
             // 
             // fichierButton
             // 
@@ -237,32 +229,66 @@
             fichierButton.UseVisualStyleBackColor = true;
             fichierButton.Click += fichierButton_Click;
             // 
-            // fichiersGestion
+            // listeMusiqueMP3
             // 
-            fichiersGestion.Location = new Point(687, 461);
-            fichiersGestion.Margin = new Padding(3, 4, 3, 4);
-            fichiersGestion.Name = "fichiersGestion";
-            fichiersGestion.Padding = new Padding(3, 4, 3, 4);
-            fichiersGestion.Size = new Size(337, 439);
-            fichiersGestion.TabIndex = 8;
-            fichiersGestion.TabStop = false;
-            fichiersGestion.Text = "Musique";
+            listeMusiqueMP3.AutoScroll = true;
+            listeMusiqueMP3.Location = new Point(687, 320);
+            listeMusiqueMP3.Name = "listeMusiqueMP3";
+            listeMusiqueMP3.Size = new Size(351, 273);
+            listeMusiqueMP3.TabIndex = 10;
+            // 
+            // splitter1
+            // 
+            splitter1.Location = new Point(0, 0);
+            splitter1.Name = "splitter1";
+            splitter1.Size = new Size(4, 810);
+            splitter1.TabIndex = 11;
+            splitter1.TabStop = false;
+            // 
+            // labelMp3List
+            // 
+            labelMp3List.AutoSize = true;
+            labelMp3List.Location = new Point(687, 276);
+            labelMp3List.Name = "labelMp3List";
+            labelMp3List.Size = new Size(61, 20);
+            labelMp3List.TabIndex = 12;
+            labelMp3List.Text = "MP3 list";
+            // 
+            // listColors
+            // 
+            listColors.AutoScroll = true;
+            listColors.Location = new Point(687, 67);
+            listColors.Name = "listColors";
+            listColors.Size = new Size(119, 187);
+            listColors.TabIndex = 13;
+            // 
+            // colorChangeLabel
+            // 
+            colorChangeLabel.AutoSize = true;
+            colorChangeLabel.Location = new Point(687, 30);
+            colorChangeLabel.Name = "colorChangeLabel";
+            colorChangeLabel.Size = new Size(179, 20);
+            colorChangeLabel.TabIndex = 14;
+            colorChangeLabel.Text = "Changement des couleurs";
             // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1058, 952);
-            Controls.Add(fichiersGestion);
+            ClientSize = new Size(1059, 832);
+            Controls.Add(colorChangeLabel);
+            Controls.Add(listColors);
+            Controls.Add(labelMp3List);
+            Controls.Add(splitter1);
+            Controls.Add(listeMusiqueMP3);
             Controls.Add(fichierButton);
-            Controls.Add(listButtonsColors);
             Controls.Add(statusBar);
             Controls.Add(buttonEnvoi);
             Controls.Add(label3);
             Controls.Add(textMessage);
             Controls.Add(richMessages);
             Controls.Add(groupBox1);
-            Margin = new Padding(5, 5, 5, 5);
+            Margin = new Padding(5);
             MaximizeBox = false;
             Name = "MainWindow";
             Text = "Client de Tchatche";
@@ -292,8 +318,11 @@
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textAlias;
-        private GroupBox listButtonsColors;
         private Button fichierButton;
-        private GroupBox fichiersGestion;
+        private FlowLayoutPanel listeMusiqueMP3;
+        private Splitter splitter1;
+        private Label labelMp3List;
+        private FlowLayoutPanel listColors;
+        private Label colorChangeLabel;
     }
 }
